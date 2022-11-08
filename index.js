@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -22,7 +22,14 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run(){
     try{
        const productCollection = client.db('serviceData').collection('services')
-     
+       
+       //getId
+       app.get('/services/:id', async(req, res)=>{
+         const id = req.params.id;
+         const query = {_id: ObjectId(id)}
+         const result = await productCollection.findOne(query)
+         res.send(result)
+       })
       
        //allservices
        app.get('/services', async(req, res)=>{
