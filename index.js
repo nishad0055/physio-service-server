@@ -24,6 +24,23 @@ async function run(){
        const productCollection = client.db('serviceData').collection('services')
        const reviewCollection = client.db('ReviewData').collection('reviews')
        
+
+      app.get('/reviews' , async(req, res)=>{
+         
+        let query = {};
+        if(req.query.service){
+          query ={
+            service: req.query.service
+          }
+        }
+         const cursor = reviewCollection.find(query)
+         const review = await cursor.toArray()
+         res.send(review)
+      })
+
+
+
+
         //review
         app.post('/reviews', async(req, res)=>{
           const query = req.body;
