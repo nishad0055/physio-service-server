@@ -106,7 +106,7 @@ async function run(){
 
    
        //post
-       app.post('/services', async(req, res)=>{
+       app.post('/service', async(req, res)=>{
           const query = req.body;
           const result = await productCollection.insertOne(query)
           res.send(result)
