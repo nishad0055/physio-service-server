@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 require('dotenv').config()
+const jwt = require('jsonwebtoken')
 const port = process.env.PORT || 5000;
 
 //mid
@@ -24,6 +25,13 @@ async function run(){
        const productCollection = client.db('serviceData').collection('services')
        const reviewCollection = client.db('ReviewData').collection('reviews')
        
+       //jwt
+       app.post('/jwt', (req, res)=>{
+        
+        const user = req.body
+        const token = jwt.sign(user,process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
+        res.send({token})
+       })
 
        app.get('/reviews', async(req, res)=>{
           
@@ -67,7 +75,20 @@ async function run(){
         res.send(result)
 
       })
-  
+       
+      app.put('/reviews/:id',async(req, res)=>{
+        const id = req.params.id;
+        const filter = { _id: ObjectId(id)}
+        const user = req.body;
+        const option = {upsert: true}
+        const updated = {
+          $set:{
+               feedback:user.message
+          }
+        }
+        const result = await reviewCollection.updateOne(filte, updated, option)
+        res.send(result)
+      })
 
         //review
         app.post('/reviews', async(req, res)=>{
